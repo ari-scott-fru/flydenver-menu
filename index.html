@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlyDenver — Mega Menu Prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Brand Colors */
+      --den-purple: #1B1464;
+      --den-purple-light: #2D2178;
+      --den-violet: #440099;
+      --den-violet-light: #8F66C2;
+      --den-violet-dark: #7A52B0;
+      --den-teal: #00B2A9;
+      --den-orange: #DC582A;
+      --den-lime: #C4D451;
+      --den-white: #FFFFFF;
+
+      /* Gray Scale */
+      --den-gray-100: #F5F5F5;
+      --den-gray-200: #E5E5E5;
+      --den-gray-500: #737373;
+      --den-gray-700: #404040;
+      --den-gray-900: #0f0f10;
+
+      /* Backgrounds */
+      --den-dropdown-bg: #F5F8FC;
+
+      /* Layout */
+      --container-max-width: 1320px;
+      --container-padding: 48px;
+      --mobile-padding: 24px;
+      --mobile-breakpoint: 1024px;
+    }
+
+    body {
+      font-family: 'Source Sans Pro', system-ui, -apple-system, sans-serif;
+      background: #f0f0f0;
+      color: var(--den-gray-900);
+      min-height: 100vh;
+    }
+
+    .menu-wrapper {
+      width: 100%;
+      background: var(--den-white);
+    }
+    .container {
+      max-width: var(--container-max-width);
+      margin: 0 auto;
+      padding: 0 var(--container-padding);
+    }
+
+    /* ── Logo (inline in nav bar) ── */
+    .logo { display: flex; align-items: center; flex-shrink: 0; }
+    .logo-img { height: 50px; width: auto; display: block; }
+
+    /* ── Persona Tabs ── */
+    .persona-tabs {
+      width: 100%;
+      background: var(--den-violet);
+    }
+    .persona-tabs-inner {
+      max-width: var(--container-max-width);
+      margin: 0 auto;
+      padding: 16px var(--container-padding) 0;
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+    }
+    .persona-tab {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 24px;
+      border-radius: 0;
+      font-size: 17px; font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--den-violet-light);
+      color: var(--den-white);
+      border: none;
+      user-select: none;
+    }
+    .persona-tab svg { transition: color 0.2s; color: var(--den-white); }
+    .persona-tab.active {
+      background: var(--den-white);
+      color: var(--den-gray-900);
+      font-weight: 600;
+      border: none;
+    }
+    .persona-tab.active svg { color: var(--den-gray-900); }
+    .persona-tab:not(.active):hover {
+      background: var(--den-violet-dark);
+    }
+    .persona-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-left: auto;
+      align-self: center;
+      padding-bottom: 16px;
+    }
+    .persona-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .persona-links a {
+      font-size: 17px;
+      font-weight: 400;
+      color: var(--den-white);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .persona-links a:hover {
+      opacity: 0.8;
+    }
+    .language-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .persona-ctas {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .persona-btn {
+      padding: 10px 20px;
+      font-size: 17px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 0;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .persona-btn.ghost {
+      background: transparent;
+      color: var(--den-white);
+      border: 2px solid var(--den-white);
+    }
+    .persona-btn.ghost:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .persona-btn.primary {
+      background: var(--den-white);
+      color: var(--den-violet);
+      border: 2px solid var(--den-white);
+    }
+    .persona-btn.primary:hover {
+      background: var(--den-gray-100);
+    }
+    .search-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 44px;
+      background: transparent;
+      border: none;
+      color: var(--den-white);
+      cursor: pointer;
+      transition: opacity 0.2s;
+      padding: 0;
+    }
+    .search-icon:hover {
+      opacity: 0.8;
+    }
+
+    /* ── Navigation Bar ── */
+    .nav-bar {
+      width: 100%;
+      border-bottom: 1px solid var(--den-gray-200);
+      background: var(--den-white);
+      position: relative;
+    }
+    .nav-bar-inner {
+      max-width: var(--container-max-width);
+      margin: 0 auto;
+      padding: 12px var(--container-padding);
+      display: flex;
+      align-items: center;
+    }
+    .nav-items {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      margin: 0 auto;
+    }
+    .nav-item {
+      display: flex; align-items: center;
+      height: 100%;
+      padding: 0 20px;
+      font-size: 17px; 
+      font-weight: 600;
+      color: var(--den-gray-900);
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+      position: relative;
+    }
+    .nav-item:hover { color: var(--den-purple); }
+    .nav-item.active {
+      color: var(--den-purple);
+      font-weight: 600;
+    }
+    .nav-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 40px);
+      height: 3px;
+      background: var(--den-violet);
+    }
+
+    /* ── Dropdown Menu ── */
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      width: 380px;
+      background: var(--den-dropdown-bg);
+      border-bottom: 2px solid var(--den-lime);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 24px;
+      z-index: 100;
+      animation: menuSlide 0.2s ease-out;
+    }
+    .dropdown-menu.open {
+      display: block;
+    }
+    @keyframes menuSlide {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-menu ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .dropdown-menu li a {
+      display: block;
+      font-size: 17px;
+      color: var(--den-gray-700);
+      text-decoration: none;
+      transition: color 0.15s;
+      padding: 6px 0;
+    }
+    .dropdown-menu li a:hover {
+      color: var(--den-purple);
+    }
+
+    /* ── Page Body Placeholder ── */
+    .page-body {
+      display: flex; align-items: center; justify-content: center;
+      height: 400px;
+      background: var(--den-gray-100);
+      color: var(--den-gray-500);
+      font-size: 17px;
+    }
+
+    /* ── Overlay ── */
+    .mega-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.15);
+      z-index: 9;
+    }
+    .mega-overlay.open { display: block; }
+
+    .menu-wrapper { position: relative; z-index: 10; }
+
+    /* ── Mobile Menu ── */
+    .mobile-menu-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+    }
+    .mobile-menu-toggle span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--den-gray-900);
+      transition: all 0.3s;
+    }
+    .mobile-menu-toggle.active span:nth-child(1) {
+      transform: rotate(45deg) translate(6px, 6px);
+    }
+    .mobile-menu-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+    .mobile-menu-toggle.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+    .mobile-search {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: var(--den-gray-900);
+      cursor: pointer;
+      padding: 8px;
+      margin-left: auto;
+    }
+    .mobile-flyout {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 100%;
+      height: 100vh;
+      background: var(--den-white);
+      box-shadow: -4px 0 16px rgba(0,0,0,0.1);
+      z-index: 1000;
+      transition: right 0.3s ease;
+      overflow-y: auto;
+    }
+    .mobile-flyout.open {
+      right: 0;
+    }
+    .mobile-flyout-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--den-gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .mobile-close {
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 8px;
+      color: var(--den-gray-900);
+    }
+    .mobile-tabs {
+      display: flex;
+      padding: 16px;
+      gap: 8px;
+      border-bottom: 1px solid var(--den-gray-200);
+    }
+    .mobile-tab {
+      flex: 1;
+      padding: 12px;
+      background: var(--den-gray-100);
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--den-gray-700);
+    }
+    .mobile-tab.active {
+      background: var(--den-violet);
+      color: var(--den-white);
+    }
+    .mobile-nav-items {
+      padding: 16px;
+    }
+    .mobile-nav-item {
+      border-bottom: 1px solid var(--den-gray-200);
+    }
+    .mobile-nav-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      background: transparent;
+      border: none;
+      width: 100%;
+      text-align: left;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--den-gray-900);
+      cursor: pointer;
+    }
+    .mobile-nav-item-header svg {
+      transition: transform 0.3s;
+    }
+    .mobile-nav-item.expanded .mobile-nav-item-header svg {
+      transform: rotate(180deg);
+    }
+    .mobile-nav-subitems {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .mobile-nav-item.expanded .mobile-nav-subitems {
+      max-height: 500px;
+    }
+    .mobile-nav-subitems a {
+      display: block;
+      padding: 12px 0 12px 16px;
+      font-size: 16px;
+      color: var(--den-gray-700);
+      text-decoration: none;
+    }
+    .mobile-utility-links {
+      padding: 16px;
+      display: flex;
+      flex-direction: row;
+      gap: 24px;
+      justify-content: center;
+    }
+    .mobile-utility-links a {
+      font-size: 16px;
+      color: var(--den-gray-700);
+      text-decoration: none;
+    }
+    .mobile-buttons {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .mobile-buttons button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 0;
+      cursor: pointer;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .persona-tabs {
+        display: none;
+      }
+      .nav-items {
+        display: none;
+      }
+      .mobile-menu-toggle,
+      .mobile-search {
+        display: flex;
+      }
+      .mobile-menu-toggle {
+        margin-left: 12px;
+      }
+      .nav-bar-inner {
+        padding: 12px var(--mobile-padding);
+      }
+      .dropdown-menu {
+        display: none !important;
+      }
+      /* Mobile button color overrides */
+      .mobile-buttons .persona-btn.ghost {
+        background: transparent;
+        color: var(--den-violet);
+        border: 2px solid var(--den-violet);
+      }
+      .mobile-buttons .persona-btn.primary {
+        background: var(--den-violet);
+        color: var(--den-white);
+        border: 2px solid var(--den-violet);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="mega-overlay" id="overlay"></div>
+
+<div class="menu-wrapper">
+  <!-- Persona Tabs -->
+  <div class="persona-tabs">
+    <div class="persona-tabs-inner">
+      <div class="persona-tab active" data-persona="traveler" onclick="switchPersona('traveler')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
+        Traveler
+      </div>
+      <div class="persona-tab" data-persona="business" onclick="switchPersona('business')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        Business
+      </div>
+      <div class="persona-right">
+        <div class="persona-links">
+          <a href="#">Contact</a>
+          <a href="#" class="language-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" x2="22" y1="12" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+            English
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          </a>
+          <a href="#">Jobs</a>
+        </div>
+        <div class="persona-ctas">
+          <button class="persona-btn ghost">Accessibility</button>
+          <button class="persona-btn primary">Interactive Map</button>
+          <button class="search-icon" aria-label="Search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar" id="navBar">
+    <div class="nav-bar-inner">
+      <div class="logo">
+        <img src="logo-den.png" alt="Denver International Airport" class="logo-img">
+      </div>
+      <div class="nav-items" id="navItems"></div>
+      <button class="mobile-search" onclick="alert('Search functionality')" aria-label="Search">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
+        </svg>
+      </button>
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Flyout Menu -->
+  <div class="mobile-flyout" id="mobileFlyout">
+    <div class="mobile-flyout-header">
+      <img src="logo-den.png" alt="Denver International Airport" style="height: 40px;">
+      <button class="mobile-close" onclick="toggleMobileMenu()" aria-label="Close menu">&times;</button>
+    </div>
+    <div class="mobile-tabs">
+      <button class="mobile-tab active" data-persona="traveler" onclick="switchMobilePersona('traveler')">Traveler</button>
+      <button class="mobile-tab" data-persona="business" onclick="switchMobilePersona('business')">Business</button>
+    </div>
+    <div class="mobile-nav-items" id="mobileNavItems"></div>
+    <div class="mobile-utility-links">
+      <a href="#">Contact</a>
+      <a href="#" class="language-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="2" x2="22" y1="12" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+        English
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m6 9 6 6 6-6"/>
+        </svg>
+      </a>
+      <a href="#">Jobs</a>
+    </div>
+    <div class="mobile-buttons">
+      <button class="persona-btn ghost">Accessibility</button>
+      <button class="persona-btn primary">Interactive Map</button>
+    </div>
+  </div>
+
+  <!-- Dropdown Menu -->
+  <div class="dropdown-menu" id="dropdownMenu"></div>
+
+  <!-- Page Body -->
+  <div class="page-body">
+    <span>Page content appears here — click a nav item to toggle its mega menu</span>
+  </div>
+</div>
+
+<script>
+const chevronSvg = `<svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`;
+
+const personas = {
+  traveler: {
+    navItems: ['Flights and Security', 'Parking', 'Transportation', 'Dine, Shop and Art', 'Services', 'Accessibility'],
+    menus: {
+      'Flights and Security': {
+        columns: [
+          {
+            title: '',
+            links: [
+              { label: 'Arrivals and Baggage Claim Info' },
+              { label: 'Connections' },
+              { label: 'Departures' },
+              { label: 'Airlines' },
+              { label: 'Nonstop Routes' },
+              { label: 'Security Wait Times and TSA Info' },
+              { label: 'DEN Reserve' },
+              { label: 'Expedited Security Screening Options' }
+            ]
+          }
+        ]
+      },
+      'At the Airport': {
+        columns: [
+          {
+            title: 'Dine & Shop',
+            links: [
+              { icon: 'utensils', label: 'Restaurants & Cafés' },
+              { icon: 'shopping-bag', label: 'Shopping' },
+              { icon: 'beer', label: 'Bars & Lounges' },
+              { icon: 'coffee', label: 'Coffee & Quick Bites' }
+            ]
+          },
+          {
+            title: 'Services',
+            links: [
+              { label: 'Wi-Fi & Charging' },
+              { label: 'Currency Exchange' },
+              { label: 'Pet Relief Areas' },
+              { label: 'Nursing Rooms' },
+              { label: 'Luggage Storage' }
+            ]
+          },
+          {
+            title: 'Experience DEN',
+            links: [
+              { label: 'Public Art Collection' },
+              { label: 'Rotating Exhibits' },
+              { label: 'DEN Airport App' },
+              { label: 'Relaxation Zones' }
+            ]
+          }
+        ],
+        featured: {
+          image: 'https://images.unsplash.com/photo-1483450388369-9ed95738483c?w=560&h=280&fit=crop',
+          badge: 'EXPLORE',
+          title: 'Discover Art at DEN',
+          desc: 'Experience our internationally recognized public art collection throughout the terminal.',
+          cta: 'View Gallery'
+        }
+      },
+      'Parking': {
+        columns: [
+          {
+            title: '',
+            links: [
+              { label: 'Parking Lots and Availability' },
+              { label: 'Premium Reserve Parking' },
+              { label: 'Parking Fee Estimator' },
+              { label: 'Parking Receipt, Refund or Charge Dispute Request' },
+              { label: 'Employee Parking' }
+            ]
+          }
+        ]
+      },
+      'Transportation': {
+        columns: [
+          {
+            title: '',
+            links: [
+              { label: 'Denver Transit Center' },
+              { label: 'Go To DEN' },
+              { label: 'Passenger Pickup' },
+              { label: 'Taxi' },
+              { label: 'Rental Cars' },
+              { label: 'Ride Share (Uber/Lyft)' },
+              { label: 'Car Sharing' },
+              { label: 'Hotel Shuttles' },
+              { label: 'Charter Bus' },
+              { label: 'Public Bus or Train' },
+              { label: 'Shared Van / Commuter Shuttle' },
+              { label: 'Mountain Carrier' },
+              { label: 'Bike' },
+              { label: 'Limousine' }
+            ]
+          }
+        ]
+      },
+      'Dine, Shop and Art': {
+        columns: [
+          {
+            title: '',
+            links: [
+              { label: 'Dining Options' },
+              { label: 'Shopping' },
+              { label: 'Relax and Lounge Areas' },
+              { label: 'Outdoor Decks and Firepits' },
+              { label: 'Passenger Events' },
+              { label: 'Airport Facilities and Grounds' },
+              { label: 'Finding Your Way Around Construction' },
+              { label: 'Interactive Map' },
+              { label: 'Art at DEN' }
+            ]
+          }
+        ]
+      },
+      'Services': {
+        columns: [
+          {
+            title: '',
+            links: [
+              { label: 'WiFi and Technology' },
+              { label: 'Lost and Found' },
+              { label: 'Children and Families' },
+              { label: 'Traveling with Pets' },
+              { label: 'Currency Exchange and Money Services' },
+              { label: 'Meet the CATS: Canine Airport Therapy Squad' },
+              { label: 'Interfaith Chapel' },
+              { label: 'Smoking Areas' },
+              { label: 'Mail Services' },
+              { label: 'The Westin Hotel at DEN' },
+              { label: 'Tips for Infrequent Travelers' },
+              { label: 'Tips for International Travelers' }
+            ]
+          }
+        ]
+      },
+      'Accessibility': {
+        columns: [
+          {
+            title: '',
+            links: [
+              { label: 'All Accessibility Services' },
+              { label: 'Wheelchairs' },
+              { label: 'Sunflower Hidden Disabilities Program' },
+              { label: 'Medical Services' },
+              { label: 'Service Animals' },
+              { label: 'Travel Assistance' }
+            ]
+          }
+        ]
+      },
+      'Maps & Directions': {
+        columns: [
+          {
+            title: 'Terminal Maps',
+            links: [
+              { icon: 'map', label: 'Interactive Map' },
+              { icon: 'navigation', label: 'Jeppesen Terminal' },
+              { icon: 'plane', label: 'Concourse A' },
+              { icon: 'plane', label: 'Concourse B' },
+              { icon: 'plane', label: 'Concourse C' }
+            ]
+          },
+          {
+            title: 'Getting Around',
+            links: [
+              { label: 'Train Between Concourses' },
+              { label: 'Walking Distances' },
+              { label: 'Wheelchair & Mobility' },
+              { label: 'Bridge to Westin Hotel' }
+            ]
+          },
+          {
+            title: 'Driving Directions',
+            links: [
+              { label: 'From Downtown Denver' },
+              { label: 'From Boulder' },
+              { label: 'From Colorado Springs' },
+              { label: 'From Fort Collins' }
+            ]
+          }
+        ],
+        featured: {
+          image: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?w=560&h=280&fit=crop',
+          badge: 'NEW',
+          title: 'Explore DEN with our Interactive Map',
+          desc: 'Navigate terminals, find gates, restaurants, and shops with our real-time map.',
+          cta: 'Open Map'
+        }
+      },
+      'Security': {
+        columns: [
+          {
+            title: 'Security Checkpoints',
+            links: [
+              { icon: 'shield', label: 'Wait Times (Live)' },
+              { icon: 'calendar', label: 'DEN Reserve' },
+              { icon: 'check-circle', label: 'TSA PreCheck' },
+              { icon: 'zap', label: 'CLEAR' }
+            ]
+          },
+          {
+            title: 'What to Know',
+            links: [
+              { label: 'Prohibited Items' },
+              { label: 'Liquids & Gels Rules' },
+              { label: 'Travel Document Requirements' },
+              { label: 'International Arrivals' }
+            ]
+          },
+          {
+            title: 'Programs',
+            links: [
+              { label: 'Global Entry' },
+              { label: 'Known Traveler Number' },
+              { label: 'Real ID Information' },
+              { label: 'Trusted Traveler Programs' }
+            ]
+          }
+        ],
+        featured: {
+          image: 'https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=560&h=280&fit=crop',
+          badge: 'LIVE',
+          title: 'Real-Time Security Wait Times',
+          desc: 'Check current wait times before you arrive and plan your trip accordingly.',
+          cta: 'Check Wait Times'
+        }
+      }
+    }
+  },
+  business: {
+    navItems: ['Business at DEN', 'Tenants', 'Employees and Badging', 'Projects', 'Leadership and Governance', 'Careers', 'Community'],
+    menus: {
+      'Business at DEN': {
+        columns: [
+          {
+            title: '',
+            links: [
+              { label: 'Business with DEN' },
+              { label: 'Procurement/Business Opportunities' },
+              { label: 'Advertising and Sponsorships' },
+              { label: 'Concessions at DEN' },
+              { label: 'Ground Transportation' },
+              { label: 'Air Service and Incentives' },
+              { label: 'Investor Relations' },
+              { label: 'Real Estate' },
+              { label: 'Airport Concessions Disadvantaged Business Enterprise (ACDBE)' },
+              { label: 'Certification' },
+              { label: 'Business Development Training Academy' },
+              { label: 'Mentor Protégé Program' },
+              { label: 'Outreach and Engagement' }
+            ]
+          }
+        ]
+      },
+      'Tenants': {
+        columns: [
+          {
+            title: '',
+            links: [
+              { label: 'General Tenant Info' },
+              { label: 'Airline Affairs Info and Documents' },
+              { label: 'Concessions Tenant Info' },
+              { label: 'Setting up a New Company for Badging' },
+              { label: 'Badging and Security' },
+              { label: 'AirsideDrive Program' },
+              { label: 'Rules and Regulations' }
+            ]
+          }
+        ]
+      },
+      'Employees and Badging': {
+        columns: [
+          {
+            title: '',
+            links: [
+              { label: 'All Employee Resources' },
+              { label: 'Badging and Security for New Employees' },
+              { label: 'Badging and Security for Current Employees' },
+              { label: 'Employee Parking' },
+              { label: 'Employer Login' }
+            ]
+          }
+        ]
+      },
+      'Projects': {
+        columns: [
+          {
+            title: '',
+            links: [
+              { label: 'Airport Info and Fast Facts' },
+              { label: 'Facilities and Grounds' },
+              { label: 'Vision 100 and Operation 2045' },
+              { label: 'Master Plan' },
+              { label: 'Major Projects and Infrastructure Improvements' },
+              { label: 'Interactive Map' },
+              { label: 'Airport Safety' },
+              { label: 'Service to Our Airport Patrons' },
+              { label: 'Newsroom and Media' }
+            ]
+          }
+        ]
+      },
+      'Leadership and Governance': {
+        columns: [
+          {
+            title: '',
+            links: [
+              { label: 'Governance' },
+              { label: 'Executive Leadership' },
+              { label: 'Equity, Diversity, Inclusion and Accessibility' },
+              { label: 'Reports and Financials' },
+              { label: 'Environmental, Social and Governance Report' },
+              { label: 'Rules and Regulations' }
+            ]
+          }
+        ]
+      },
+      'Careers': {
+        columns: [
+          {
+            title: '',
+            links: [
+              { label: 'Jobs' },
+              { label: 'Volunteering at DEN' },
+              { label: 'Youth Programs and Internships' }
+            ]
+          }
+        ]
+      },
+      'Community': {
+        columns: [
+          {
+            title: '',
+            links: [
+              { label: 'Sustainability' },
+              { label: 'Noise and Airspace' },
+              { label: 'Wildlife Management' },
+              { label: 'Denver Fire Department Aircraft Rescue & Firefighting (ARFF)' },
+              { label: 'Center of Equity and Excellence in Aviation (CEEA)' },
+              { label: 'Alternative Energy Solutions Request for Information' },
+              { label: 'Community Panelist Program' }
+            ]
+          }
+        ]
+      }
+    }
+  }
+};
+
+const iconPaths = {
+  'plane-takeoff': '<path d="M2 22h20"/><path d="M6.36 17.4 4 17l-2-4 1.1-.55a2 2 0 0 1 1.8 0l.17.1a2 2 0 0 0 1.8 0L8 12 5 6l.9-.45a2 2 0 0 1 2.09.2l4.02 3a2 2 0 0 0 2.1.2L22 4l-1.5 7.5L14 14l-3 2-4.64 1.4Z"/>',
+  'plane-landing': '<path d="M2 22h20"/><path d="M3.77 10.77 2 13l4.5 2 3.5-1 6.5 3.5 1.1-.55a2 2 0 0 0 .78-2.72L15.5 9l-4.87 2.5-2.96-4.48a2 2 0 0 0-1.78-1.02H5.5L3.77 10.77Z"/>',
+  'radar': '<path d="M19.07 4.93A10 10 0 0 0 6.99 3.34"/><path d="M4 6h.01"/><path d="M2.29 9.62A10 10 0 1 0 21.31 8.35"/><path d="M16.24 7.76A6 6 0 1 0 8.23 16.67"/><path d="M12 18h.01"/><path d="M17.99 11.66A6 6 0 0 1 15.77 16.67"/><circle cx="12" cy="12" r="2"/>',
+  'timer': '<line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/>',
+  'car': '<path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C1.4 11.3 1 12.1 1 13v3c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/>',
+  'credit-card': '<rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/>',
+  'map-pin': '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  'zap': '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+  'map': '<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/>',
+  'navigation': '<polygon points="3 11 22 2 13 21 11 13 3 11"/>',
+  'plane': '<path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>',
+  'shield': '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>',
+  'calendar': '<rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>',
+  'check-circle': '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+  'bar-chart-2': '<line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/>',
+  'trending-up': '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+  'file-text': '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/>',
+  'users': '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  'building': '<rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/>',
+  'hammer': '<path d="m15 12-8.5 8.5c-.83.83-2.17.83-3 0 0 0 0 0 0 0a2.12 2.12 0 0 1 0-3L12 9"/><path d="M17.64 15 22 10.64"/><path d="m20.91 11.7-1.25-1.25c-.6-.6-.93-1.4-.93-2.25v-.86L16.01 4.6a5.56 5.56 0 0 0-3.94-1.64H9l.92.82A6.18 6.18 0 0 1 12 8.4v1.56l2 2h2.47l2.26 1.91"/>',
+  'road': '<path d="M15.54 8.46a5 5 0 0 1 0 7.08"/><path d="M20.36 3.64a10 10 0 0 1 0 16.72"/>',
+  'train': '<rect width="16" height="16" x="4" y="3" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 19-2 3"/><path d="m18 22-2-3"/><path d="M8 15h0"/><path d="M16 15h0"/>',
+  'store': '<path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2v0a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12v0a2 2 0 0 1-2-2V7"/>',
+  'utensils': '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>',
+  'shopping-bag': '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
+  'beer': '<path d="M17 11h1a3 3 0 0 1 0 6h-1"/><path d="M9 12v6"/><path d="M13 12v6"/><path d="M14 7.5c-1 0-1.44.5-3 .5s-2-.5-3-.5-1.72.5-2.5.5a2.5 2.5 0 0 1 0-5c.78 0 1.57.5 2.5.5S9.44 3 11 3s2 .5 3 .5 1.72-.5 2.5-.5a2.5 2.5 0 0 1 0 5c-.78 0-1.5-.5-2.5-.5Z"/><path d="M5 8v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"/>',
+  'coffee': '<path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" x2="6" y1="2" y2="4"/><line x1="10" x2="10" y1="2" y2="4"/><line x1="14" x2="14" y1="2" y2="4"/>',
+  'briefcase': '<rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  'search': '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>',
+  'wrench': '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+  'monitor': '<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>',
+  'info': '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+  'history': '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
+  'award': '<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>',
+  'globe': '<circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>'
+};
+
+function getIcon(name) {
+  const path = iconPaths[name];
+  if (!path) return '';
+  return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
+}
+
+let currentPersona = 'traveler';
+let activeNavItem = null;
+
+function switchPersona(persona) {
+  currentPersona = persona;
+  activeNavItem = null;
+
+  document.querySelectorAll('.persona-tab').forEach(tab => {
+    tab.classList.toggle('active', tab.dataset.persona === persona);
+  });
+
+  renderNav();
+  closeMega();
+}
+
+function renderNav() {
+  const navItems = document.getElementById('navItems');
+  const items = personas[currentPersona].navItems;
+  navItems.innerHTML = items.map(item =>
+    `<div class="nav-item" data-nav="${item}" onclick="toggleMega('${item}')">
+      ${item}
+    </div>`
+  ).join('');
+}
+
+function toggleMega(navItem) {
+  if (activeNavItem === navItem) {
+    closeMega();
+    return;
+  }
+  activeNavItem = navItem;
+
+  const activeElement = Array.from(document.querySelectorAll('.nav-item')).find(el => el.dataset.nav === navItem);
+
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.nav === navItem);
+  });
+
+  const menu = personas[currentPersona].menus[navItem];
+  if (!menu) { closeMega(); return; }
+
+  const dropdown = document.getElementById('dropdownMenu');
+
+  // Flatten all links from all columns into a single list
+  const allLinks = menu.columns.flatMap(col => col.links);
+
+  dropdown.innerHTML = `
+    <ul>
+      ${allLinks.map(link => `
+        <li><a href="#">${link.label}</a></li>
+      `).join('')}
+    </ul>
+  `;
+
+  dropdown.classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+
+  // Position the dropdown under the clicked nav item
+  setTimeout(() => {
+    if (activeElement) {
+      const navBar = document.querySelector('.nav-bar');
+      const navItemRect = activeElement.getBoundingClientRect();
+      const navBarRect = navBar.getBoundingClientRect();
+
+      // Position dropdown below nav bar
+      const dropdownWidth = 420;
+      const viewportWidth = window.innerWidth;
+      const wouldOverflow = navItemRect.left + dropdownWidth > viewportWidth;
+
+      dropdown.style.top = `${navBarRect.bottom}px`;
+
+      if (wouldOverflow) {
+        // Align right edge to prevent overflow
+        dropdown.style.left = 'auto';
+        dropdown.style.right = `${viewportWidth - navItemRect.right}px`;
+      } else {
+        // Normal left alignment
+        dropdown.style.left = `${navItemRect.left}px`;
+        dropdown.style.right = 'auto';
+      }
+    }
+  }, 0);
+}
+
+function closeMega() {
+  activeNavItem = null;
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('dropdownMenu').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+document.getElementById('overlay').addEventListener('click', closeMega);
+
+// Mobile menu functions
+function toggleMobileMenu() {
+  const flyout = document.getElementById('mobileFlyout');
+  const toggle = document.getElementById('mobileMenuToggle');
+  const overlay = document.getElementById('overlay');
+
+  flyout.classList.toggle('open');
+  toggle.classList.toggle('active');
+
+  if (flyout.classList.contains('open')) {
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  } else {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+function switchMobilePersona(persona) {
+  currentPersona = persona;
+
+  document.querySelectorAll('.mobile-tab').forEach(tab => {
+    tab.classList.toggle('active', tab.dataset.persona === persona);
+  });
+
+  renderMobileNav();
+}
+
+function renderMobileNav() {
+  const mobileNavItems = document.getElementById('mobileNavItems');
+  const items = personas[currentPersona].navItems;
+
+  mobileNavItems.innerHTML = items.map(item => {
+    const menu = personas[currentPersona].menus[item];
+    if (!menu) return '';
+
+    const allLinks = menu.columns.flatMap(col => col.links);
+
+    return `
+      <div class="mobile-nav-item">
+        <button class="mobile-nav-item-header" onclick="toggleMobileNavItem(this)">
+          ${item}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </button>
+        <div class="mobile-nav-subitems">
+          ${allLinks.map(link => `<a href="#">${link.label}</a>`).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleMobileNavItem(button) {
+  const navItem = button.parentElement;
+  navItem.classList.toggle('expanded');
+}
+
+// Close mobile menu when overlay is clicked
+document.getElementById('overlay').addEventListener('click', () => {
+  const flyout = document.getElementById('mobileFlyout');
+  if (flyout.classList.contains('open')) {
+    toggleMobileMenu();
+  }
+});
+
+// Initialize
+renderNav();
+renderMobileNav();
+</script>
+
+</body>
+</html>
