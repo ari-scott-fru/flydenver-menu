@@ -45,6 +45,10 @@
       min-height: 100vh;
     }
 
+    button, input, select, textarea {
+      font-family: 'Source Sans Pro', system-ui, -apple-system, sans-serif;
+    }
+
     .menu-wrapper {
       width: 100%;
       background: var(--den-white);
@@ -129,6 +133,9 @@
       gap: 16px;
     }
     .persona-btn {
+      /* display: flex;
+      align-items: center; */
+      gap: 8px;
       padding: 10px 20px;
       font-size: 17px;
       font-weight: 500;
@@ -233,6 +240,22 @@
     .dropdown-menu.open {
       display: block;
     }
+    .dropdown-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 4px;
+      color: var(--den-gray-700);
+      line-height: 1;
+      transition: opacity 0.2s;
+    }
+    .dropdown-close:hover {
+      opacity: 0.6;
+    }
     @keyframes menuSlide {
       from { opacity: 0; transform: translateY(-4px); }
       to { opacity: 1; transform: translateY(0); }
@@ -334,6 +357,22 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+    .mobile-map-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--den-violet);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .mobile-map-link:hover {
+      opacity: 0.8;
+    }
+    .mobile-map-link svg {
+      color: var(--den-violet);
     }
     .mobile-close {
       background: transparent;
@@ -538,6 +577,17 @@
   <div class="mobile-flyout" id="mobileFlyout">
     <div class="mobile-flyout-header">
       <img src="./assets/logo-den.png" alt="Denver International Airport" style="height: 40px;">
+      <a href="#" class="mobile-map-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z"/>
+          <path d="M9 3v15"/>
+          <path d="M15 6v15"/>
+        </svg>
+        Interactive Map
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m9 18 6-6-6-6"/>
+        </svg>
+      </a>
       <button class="mobile-close" onclick="toggleMobileMenu()" aria-label="Close menu">&times;</button>
     </div>
     <div class="mobile-tabs">
@@ -562,7 +612,6 @@
     </div>
     <div class="mobile-buttons">
       <button class="persona-btn ghost">Accessibility</button>
-      <button class="persona-btn primary">Interactive Map</button>
     </div>
   </div>
 
@@ -1019,6 +1068,7 @@ function toggleMega(navItem) {
   const allLinks = menu.columns.flatMap(col => col.links);
 
   dropdown.innerHTML = `
+    <button class="dropdown-close" onclick="closeMega()" aria-label="Close menu">&times;</button>
     <ul>
       ${allLinks.map(link => `
         <li><a href="#">${link.label}</a></li>
