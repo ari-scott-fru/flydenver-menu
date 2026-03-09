@@ -6,6 +6,7 @@
   <title>FlyDenver — Mega Menu Prototype</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -389,7 +390,7 @@
       border-bottom: 1px solid var(--den-gray-200);
     }
     .mobile-tab {
-      flex: 1;
+      flex: 0 0 30%;
       padding: 12px;
       background: var(--den-gray-100);
       border: none;
@@ -398,6 +399,9 @@
       cursor: pointer;
       transition: all 0.2s;
       color: var(--den-gray-700);
+    }
+    .mobile-tab[data-persona="traveler"] {
+      flex: 0 0 70%;
     }
     .mobile-tab.active {
       background: var(--den-violet);
@@ -577,17 +581,18 @@
   <div class="mobile-flyout" id="mobileFlyout">
     <div class="mobile-flyout-header">
       <img src="./assets/logo-den.png" alt="Denver International Airport" style="height: 40px;">
-      <a href="#" class="mobile-map-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z"/>
-          <path d="M9 3v15"/>
-          <path d="M15 6v15"/>
-        </svg>
-        Interactive Map
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m9 18 6-6-6-6"/>
-        </svg>
-      </a>
+      <div style="display: flex; align-items: center; gap: 24px;">
+        <a href="#" class="mobile-map-link">
+          <i class="fa-solid fa-map-location-dot"></i>
+          Interactive Map
+          <i class="fa-solid fa-chevron-right" style="font-size: 12px;"></i>
+        </a>
+        <a href="#" class="mobile-map-link">
+          <i class="fa-solid fa-wheelchair"></i>
+          Accessibility
+          <i class="fa-solid fa-chevron-right" style="font-size: 12px;"></i>
+        </a>
+      </div>
       <button class="mobile-close" onclick="toggleMobileMenu()" aria-label="Close menu">&times;</button>
     </div>
     <div class="mobile-tabs">
@@ -610,9 +615,6 @@
       </a>
       <a href="#">Jobs</a>
     </div>
-    <div class="mobile-buttons">
-      <button class="persona-btn ghost">Accessibility</button>
-    </div>
   </div>
 
   <!-- Dropdown Menu -->
@@ -629,7 +631,7 @@ const chevronSvg = `<svg class="chevron" width="14" height="14" viewBox="0 0 24 
 
 const personas = {
   traveler: {
-    navItems: ['Flights and Security', 'Parking', 'Transportation', 'Dine, Shop and Art', 'Services', 'Accessibility'],
+    navItems: ['Flights and Security', 'Parking', 'Transportation', 'Dine, Shop and Art', 'Services', 'Accessibility', 'Careers'],
     menus: {
       'Flights and Security': {
         columns: [
@@ -706,7 +708,8 @@ const personas = {
           {
             title: '',
             links: [
-              { label: 'Denver Transit Center' },
+              { label: 'Airport Transit Center' },
+              { label: 'Ground Transportation' },
               { label: 'Go To DEN' },
               { label: 'Passenger Pickup' },
               { label: 'Taxi' },
@@ -774,6 +777,18 @@ const personas = {
               { label: 'Medical Services' },
               { label: 'Service Animals' },
               { label: 'Travel Assistance' }
+            ]
+          }
+        ]
+      },
+      'Careers': {
+        columns: [
+          {
+            title: '',
+            links: [
+              { label: 'Jobs' },
+              { label: 'Volunteering at DEN' },
+              { label: 'Youth Programs and Internships' }
             ]
           }
         ]
@@ -858,18 +873,18 @@ const personas = {
     }
   },
   business: {
-    navItems: ['Business at DEN', 'Tenants', 'Employees and Badging', 'Projects', 'Leadership and Governance', 'Careers', 'Community'],
+    navItems: ['Business at DEN', 'Tenants', 'Employees and Badging', 'About DEN', 'Leadership and Governance', 'Community'],
+
     menus: {
       'Business at DEN': {
         columns: [
           {
             title: '',
             links: [
-              { label: 'Business with DEN' },
+              { label: 'Doing Business with DEN' },
               { label: 'Procurement/Business Opportunities' },
               { label: 'Advertising and Sponsorships' },
               { label: 'Concessions at DEN' },
-              { label: 'Ground Transportation' },
               { label: 'Air Service and Incentives' },
               { label: 'Investor Relations' },
               { label: 'Real Estate' },
@@ -912,20 +927,20 @@ const personas = {
           }
         ]
       },
-      'Projects': {
+      'About DEN': {
         columns: [
           {
             title: '',
             links: [
               { label: 'Airport Info and Fast Facts' },
+              { label: 'Newsroom and Media' },
               { label: 'Facilities and Grounds' },
               { label: 'Vision 100 and Operation 2045' },
               { label: 'Master Plan' },
               { label: 'Major Projects and Infrastructure Improvements' },
               { label: 'Interactive Map' },
               { label: 'Airport Safety' },
-              { label: 'Service to Our Airport Patrons' },
-              { label: 'Newsroom and Media' }
+              { label: 'Service to Our Airport Patrons' }
             ]
           }
         ]
@@ -941,18 +956,6 @@ const personas = {
               { label: 'Reports and Financials' },
               { label: 'Environmental, Social and Governance Report' },
               { label: 'Rules and Regulations' }
-            ]
-          }
-        ]
-      },
-      'Careers': {
-        columns: [
-          {
-            title: '',
-            links: [
-              { label: 'Jobs' },
-              { label: 'Volunteering at DEN' },
-              { label: 'Youth Programs and Internships' }
             ]
           }
         ]
@@ -1185,6 +1188,21 @@ document.getElementById('overlay').addEventListener('click', () => {
 // Initialize
 renderNav();
 renderMobileNav();
+
+// Live reload - poll for file changes
+(function() {
+  let lastModified = null;
+  setInterval(async () => {
+    try {
+      const res = await fetch(window.location.href, { method: 'HEAD' });
+      const modified = res.headers.get('Last-Modified');
+      if (lastModified && modified !== lastModified) {
+        window.location.reload();
+      }
+      lastModified = modified;
+    } catch (e) {}
+  }, 1000);
+})();
 </script>
 
 </body>
