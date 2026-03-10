@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlyDenver Blog — Stories from Denver International Airport</title>
+  <meta name="description" content="Travel tips, dining guides, art & culture, and insider stories from Denver International Airport.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.typekit.net/your-kit-id.css"><!-- Colfax Web via Adobe Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            den: {
+              violet: '#440099',
+              'violet-light': '#8F66C2',
+              teal: '#00B2A9',
+              orange: '#DC582A',
+              lime: '#C4D451',
+              cream: '#FAF9F6',
+              warm: '#F7F5F0',
+            }
+          },
+          fontFamily: {
+            editorial: ['"colfax-web"', '"Source Sans Pro"', 'system-ui', 'sans-serif'],
+            body: ['"Source Sans Pro"', 'system-ui', 'sans-serif'],
+            mono: ['monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: 'Source Sans Pro', system-ui, sans-serif;
+      background: #FAF9F6;
+      color: #0f0f10;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    ::selection {
+      background: #C4D451;
+      color: #440099;
+    }
+
+    /* Editorial headline styling */
+    .headline-editorial {
+      font-family: 'colfax-web', 'Source Sans Pro', system-ui, sans-serif;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+    }
+
+    /* Subtle grain texture overlay */
+    .grain-overlay::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Card hover lift */
+    .card-lift {
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .card-lift:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px -15px rgba(27, 20, 100, 0.15);
+    }
+
+    /* Image zoom on hover */
+    .img-zoom {
+      transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .img-zoom:hover,
+    .group:hover .img-zoom,
+    article:hover .img-zoom {
+      transform: scale(1.05);
+    }
+
+    /* Smooth page transitions */
+    .page-enter {
+      animation: pageEnter 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes pageEnter {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Stagger children */
+    .stagger-in > * {
+      opacity: 0;
+      animation: staggerItem 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .stagger-in > *:nth-child(1) { animation-delay: 0.05s; }
+    .stagger-in > *:nth-child(2) { animation-delay: 0.1s; }
+    .stagger-in > *:nth-child(3) { animation-delay: 0.15s; }
+    .stagger-in > *:nth-child(4) { animation-delay: 0.2s; }
+    .stagger-in > *:nth-child(5) { animation-delay: 0.25s; }
+    .stagger-in > *:nth-child(6) { animation-delay: 0.3s; }
+    .stagger-in > *:nth-child(7) { animation-delay: 0.35s; }
+    .stagger-in > *:nth-child(8) { animation-delay: 0.4s; }
+    @keyframes staggerItem {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Category pill colors */
+    .cat-travel-tips { background: #C4D451; color: #0f0f10; }
+    .cat-eat-drink { background: #C4D451; color: #0f0f10; }
+    .cat-parking-transport { background: #C4D451; color: #0f0f10; }
+    .cat-art-culture { background: #C4D451; color: #0f0f10; }
+    .cat-inside-den { background: #C4D451; color: #0f0f10; }
+    .cat-news { background: #C4D451; color: #0f0f10; }
+
+    /* Pull quote */
+    .pull-quote {
+      position: relative;
+      padding-left: 24px;
+      border-left: 3px solid #C4D451;
+    }
+    .pull-quote::before {
+      content: '\201C';
+      font-family: 'Source Sans Pro', sans-serif;
+      font-size: 4rem;
+      color: #C4D451;
+      position: absolute;
+      top: -20px;
+      left: 24px;
+      line-height: 1;
+    }
+
+    /* Callout box */
+    .callout-box {
+      background: linear-gradient(135deg, #f5f8e6 0%, #eef3d4 100%);
+      border-left: 4px solid #C4D451;
+    }
+
+    /* TOC active state */
+    .toc-link.active {
+      color: #440099;
+      font-weight: 600;
+    }
+    .toc-link {
+      transition: color 0.2s, padding-left 0.2s;
+    }
+    .toc-link:hover {
+      color: #440099;
+      padding-left: 4px;
+    }
+
+    /* FAQ accordion */
+    .faq-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .faq-content.open {
+      max-height: 300px;
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #FAF9F6; }
+    ::-webkit-scrollbar-thumb { background: #C4D451; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #a8b844; }
+
+    /* Newsletter input focus */
+    .newsletter-input:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(196, 212, 81, 0.4);
+    }
+
+    /* Tent roof decorative shape */
+    .tent-shape {
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    }
+
+    /* Article body typography */
+    .article-body h2 {
+      font-family: 'colfax-web', 'Source Sans Pro', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000000;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      letter-spacing: -0.01em;
+    }
+    .article-body h3 {
+      font-family: 'colfax-web', 'Source Sans Pro', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #000000;
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .article-body p {
+      font-size: 1.125rem;
+      line-height: 1.8;
+      color: #404040;
+      margin-bottom: 1.25rem;
+    }
+    .article-body ul, .article-body ol {
+      font-size: 1.125rem;
+      line-height: 1.8;
+      color: #404040;
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+    }
+    .article-body li {
+      margin-bottom: 0.5rem;
+    }
+    .article-body a {
+      color: #440099;
+      text-decoration: underline;
+      text-decoration-color: #C4D451;
+      text-underline-offset: 3px;
+      transition: color 0.2s;
+    }
+    .article-body a:hover {
+      color: #440099;
+    }
+
+    /* Hero parallax subtle */
+    .hero-image {
+      transition: transform 0.1s linear;
+    }
+
+    /* Diagonal accent line */
+    .diagonal-accent {
+      position: relative;
+    }
+    .diagonal-accent::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: #C4D451;
+    }
+
+    /* Wait time bar chart */
+    .wait-bar {
+      transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @media (max-width: 768px) {
+      .article-body h2 { font-size: 1.4rem; }
+      .article-body p { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ─── Data ───────────────────────────────────────────────────────────
+const categories = [
+  { id: 'all', label: 'All Stories' },
+  { id: 'travel-tips', label: 'Travel Tips' },
+  { id: 'eat-drink', label: 'Eat & Drink' },
+  { id: 'parking-transport', label: 'Parking & Transport' },
+  { id: 'art-culture', label: 'Art & Culture' },
+  { id: 'inside-den', label: 'Inside DEN' },
+  { id: 'news', label: 'News' },
+];
+
+const posts = [
+  {
+    id: 'security-wait-times',
+    title: 'Your Complete Guide to DEN Security Wait Times',
+    excerpt: 'Everything you need to know about getting through security at Denver International Airport — including real-time tips and how to speed up the process.',
+    category: 'travel-tips',
+    categoryLabel: 'Travel Tips',
+    date: 'March 5, 2026',
+    readTime: '8 min read',
+    lastUpdated: 'March 2026',
+    image: 'https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=1600&h=900&fit=crop',
+    featured: true,
+    type: 'evergreen',
+    author: 'DEN Travel Team',
+  },
+  {
+    id: 'best-restaurants',
+    title: 'The Best Places to Eat at DEN, Gate by Gate',
+    excerpt: 'From craft cocktails at Concourse B to quick bites near your gate — your ultimate DEN dining guide.',
+    category: 'eat-drink',
+    categoryLabel: 'Eat & Drink',
+    date: 'February 28, 2026',
+    readTime: '10 min read',
+    lastUpdated: 'February 2026',
+    image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&h=450&fit=crop',
+    featured: false,
+    type: 'evergreen',
+    author: 'DEN Dining Guide',
+  },
+  {
+    id: 'parking-guide',
+    title: 'Every Parking Option at DEN, Explained',
+    excerpt: 'Economy, hourly, premium reserve, or off-site? We break down every way to park at Denver International.',
+    category: 'parking-transport',
+    categoryLabel: 'Parking & Transport',
+    date: 'February 20, 2026',
+    readTime: '7 min read',
+    lastUpdated: 'February 2026',
+    image: 'https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=800&h=450&fit=crop',
+    featured: false,
+    type: 'evergreen',
+    author: 'DEN Travel Team',
+  },
+  {
+    id: 'secrets-of-den',
+    title: 'The Secrets of DEN: Art, Architecture & Conspiracy Theories',
+    excerpt: 'From Blucifer to the underground tunnels — the real stories behind Denver International\'s most talked-about mysteries.',
+    category: 'art-culture',
+    categoryLabel: 'Art & Culture',
+    date: 'February 14, 2026',
+    readTime: '12 min read',
+    image: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=800&h=450&fit=crop',
+    featured: false,
+    type: 'feature',
+    author: 'DEN Cultural Team',
+  },
+  {
+    id: 'turkish-airlines',
+    title: "Turkish Airlines Launches Denver's Longest Nonstop Flight",
+    excerpt: 'New direct service to Istanbul begins May 2026, connecting Colorado travelers to 300+ destinations worldwide.',
+    category: 'news',
+    categoryLabel: 'News',
+    date: 'February 10, 2026',
+    readTime: '4 min read',
+    image: 'https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=800&h=450&fit=crop',
+    featured: false,
+    type: 'news',
+    author: 'DEN Newsroom',
+  },
+  {
+    id: 'great-hall',
+    title: 'Inside the Great Hall: What Travelers Need to Know in 2026',
+    excerpt: 'The Great Hall transformation is reshaping the heart of DEN. Here\'s what\'s changing, what\'s open, and what to expect.',
+    category: 'inside-den',
+    categoryLabel: 'Inside DEN',
+    date: 'February 1, 2026',
+    readTime: '9 min read',
+    image: 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=800&h=450&fit=crop',
+    featured: false,
+    type: 'feature',
+    author: 'DEN Projects Team',
+  },
+  {
+    id: 'lounges-guide',
+    title: 'DEN Lounges: Your Complete Guide to Relaxing Before Your Flight',
+    excerpt: 'United Club, Centurion Lounge, and more — find your perfect pre-flight retreat at Denver International.',
+    category: 'travel-tips',
+    categoryLabel: 'Travel Tips',
+    date: 'January 25, 2026',
+    readTime: '6 min read',
+    image: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800&h=450&fit=crop',
+    featured: false,
+    type: 'evergreen',
+    author: 'DEN Travel Team',
+  },
+  {
+    id: 'downtown-transport',
+    title: 'How to Get From DEN to Downtown Denver',
+    excerpt: 'A-Line train, rideshare, shuttle, or rental car? Compare every option with costs, times, and our recommendations.',
+    category: 'parking-transport',
+    categoryLabel: 'Parking & Transport',
+    date: 'January 18, 2026',
+    readTime: '6 min read',
+    image: 'https://images.unsplash.com/photo-1546156929-a4c0ac411f47?w=800&h=450&fit=crop',
+    featured: false,
+    type: 'evergreen',
+    author: 'DEN Travel Team',
+  },
+  {
+    id: 'family-travel-tips',
+    title: 'Traveling With Kids? Your Family Guide to DEN',
+    excerpt: 'Play areas, nursing rooms, family restrooms, and kid-friendly dining — everything parents need to know before flying out of DEN.',
+    category: 'travel-tips',
+    categoryLabel: 'Travel Tips',
+    date: 'January 10, 2026',
+    readTime: '7 min read',
+    image: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&h=450&fit=crop',
+    featured: false,
+    type: 'evergreen',
+    author: 'DEN Travel Team',
+  },
+  {
+    id: 'sustainability',
+    title: 'How DEN Is Building a More Sustainable Airport',
+    excerpt: 'From solar farms to zero-waste initiatives — a look at Denver International\'s commitment to environmental leadership.',
+    category: 'inside-den',
+    categoryLabel: 'Inside DEN',
+    date: 'January 5, 2026',
+    readTime: '8 min read',
+    image: 'https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=800&h=450&fit=crop',
+    featured: false,
+    type: 'feature',
+    author: 'DEN Sustainability Team',
+  },
+  {
+    id: 'pet-travel',
+    title: 'Flying With Pets: DEN\'s Complete Pet Travel Guide',
+    excerpt: 'Pet relief areas, airline policies, and tips for stress-free travel with your furry companion through Denver International.',
+    category: 'travel-tips',
+    categoryLabel: 'Travel Tips',
+    date: 'December 28, 2025',
+    readTime: '5 min read',
+    image: 'https://images.unsplash.com/photo-1560807707-8cc77767d783?w=800&h=450&fit=crop',
+    featured: false,
+    type: 'evergreen',
+    author: 'DEN Travel Team',
+  },
+  {
+    id: 'new-concourse-shops',
+    title: 'New Shops and Restaurants Coming to Concourse C',
+    excerpt: 'A wave of new retail and dining options are opening this spring — here\'s what to look forward to.',
+    category: 'eat-drink',
+    categoryLabel: 'Eat & Drink',
+    date: 'December 20, 2025',
+    readTime: '4 min read',
+    image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=450&fit=crop',
+    featured: false,
+    type: 'news',
+    author: 'DEN Newsroom',
+  },
+  {
+    id: 'blucifer-story',
+    title: 'The Real Story Behind Blucifer',
+    excerpt: 'The 32-foot blue mustang is DEN\'s most iconic — and controversial — landmark. Here\'s the fascinating true story.',
+    category: 'art-culture',
+    categoryLabel: 'Art & Culture',
+    date: 'December 15, 2025',
+    readTime: '6 min read',
+    image: 'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=800&h=450&fit=crop',
+    featured: false,
+    type: 'evergreen',
+    author: 'DEN Cultural Team',
+  },
+  {
+    id: 'winter-travel',
+    title: 'Winter Travel at DEN: Delays, De-Icing, and What to Know',
+    excerpt: 'Colorado winters can be unpredictable. Here\'s how DEN handles snow operations and what you can do to stay ahead.',
+    category: 'travel-tips',
+    categoryLabel: 'Travel Tips',
+    date: 'December 8, 2025',
+    readTime: '5 min read',
+    image: 'https://images.unsplash.com/photo-1491002052546-bf38f186af56?w=800&h=450&fit=crop',
+    featured: false,
+    type: 'evergreen',
+    author: 'DEN Operations Team',
+  },
+  {
+    id: 'car-rental-guide',
+    title: 'The Complete Guide to Renting a Car at DEN',
+    excerpt: 'All rental car companies, shuttle info, pricing tips, and the fastest way to get on the road from Denver International.',
+    category: 'parking-transport',
+    categoryLabel: 'Parking & Transport',
+    date: 'December 1, 2025',
+    readTime: '6 min read',
+    image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=450&fit=crop',
+    featured: false,
+    type: 'evergreen',
+    author: 'DEN Travel Team',
+  },
+  {
+    id: 'public-art-tour',
+    title: 'A Self-Guided Tour of DEN\'s Public Art',
+    excerpt: 'Murals, sculptures, and installations — explore the world-class art collection hidden throughout Denver International.',
+    category: 'art-culture',
+    categoryLabel: 'Art & Culture',
+    date: 'November 22, 2025',
+    readTime: '9 min read',
+    image: 'https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=800&h=450&fit=crop',
+    featured: false,
+    type: 'evergreen',
+    author: 'DEN Cultural Team',
+  },
+  {
+    id: 'tsa-precheck',
+    title: 'TSA PreCheck, CLEAR, and Global Entry: Which One Do You Need?',
+    excerpt: 'A side-by-side comparison of every trusted traveler program available at DEN to help you skip the lines.',
+    category: 'travel-tips',
+    categoryLabel: 'Travel Tips',
+    date: 'November 15, 2025',
+    readTime: '7 min read',
+    image: 'https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=800&h=450&fit=crop',
+    featured: false,
+    type: 'evergreen',
+    author: 'DEN Travel Team',
+  },
+  {
+    id: 'wifi-guide',
+    title: 'Free WiFi at DEN: How to Connect and Stay Productive',
+    excerpt: 'Everything you need to know about DEN\'s free WiFi network, speeds, and the best spots to work while you wait.',
+    category: 'travel-tips',
+    categoryLabel: 'Travel Tips',
+    date: 'November 8, 2025',
+    readTime: '4 min read',
+    image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&h=450&fit=crop',
+    featured: false,
+    type: 'evergreen',
+    author: 'DEN Travel Team',
+  },
+  {
+    id: 'new-routes-2026',
+    title: '5 Exciting New Routes Coming to DEN in 2026',
+    excerpt: 'From European capitals to tropical getaways — the newest nonstop destinations launching from Denver International this year.',
+    category: 'news',
+    categoryLabel: 'News',
+    date: 'November 1, 2025',
+    readTime: '5 min read',
+    image: 'https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=800&h=450&fit=crop',
+    featured: false,
+    type: 'news',
+    author: 'DEN Newsroom',
+  },
+];
+
+// ─── Category Badge Component ─────────────────────────────────────
+function CategoryBadge({ category, small }) {
+  const classMap = {
+    'travel-tips': 'cat-travel-tips',
+    'eat-drink': 'cat-eat-drink',
+    'parking-transport': 'cat-parking-transport',
+    'art-culture': 'cat-art-culture',
+    'inside-den': 'cat-inside-den',
+    'news': 'cat-news',
+  };
+  const labelMap = {
+    'travel-tips': 'Travel Tips',
+    'eat-drink': 'Eat & Drink',
+    'parking-transport': 'Parking & Transport',
+    'art-culture': 'Art & Culture',
+    'inside-den': 'Inside DEN',
+    'news': 'News',
+  };
+  return (
+    <span className={`${classMap[category]} inline-block rounded-full font-body font-semibold tracking-wide whitespace-nowrap ${small ? 'text-[12px] px-2.5 py-0.5' : 'text-[14px] px-3 py-1'}`}>
+      {labelMap[category]}
+    </span>
+  );
+}
+
+// ─── Share Buttons ─────────────────────────────────────────────────
+function ShareButtons() {
+  return (
+    <div className="flex items-center gap-3">
+      <span className="text-sm font-body text-gray-400 uppercase tracking-widest mr-1">Share</span>
+      {[
+        { icon: 'fa-brands fa-x-twitter', label: 'Twitter' },
+        { icon: 'fa-brands fa-facebook-f', label: 'Facebook' },
+        { icon: 'fa-brands fa-linkedin-in', label: 'LinkedIn' },
+        { icon: 'fa-solid fa-link', label: 'Copy link' },
+      ].map(s => (
+        <button
+          key={s.label}
+          aria-label={s.label}
+          className="w-11 h-11 shrink-0 aspect-square rounded-full flex items-center justify-center text-den-violet hover:opacity-80 transition-opacity duration-300 text-base"
+          style={{backgroundColor: '#dacceb'}}
+          onClick={() => {
+            if (s.label === 'Copy link') {
+              navigator.clipboard?.writeText(window.location.href);
+            }
+          }}
+        >
+          <i className={s.icon}></i>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// ─── Newsletter CTA ────────────────────────────────────────────────
+function NewsletterCTA({ compact }) {
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
+  if (submitted) {
+    return (
+      <div className={`${compact ? 'py-8 px-6' : 'py-16 px-8 md:px-16'} bg-den-violet text-white text-center rounded-sm relative overflow-hidden grain-overlay`}>
+        <div className="relative z-10">
+          <div className="text-5xl mb-4">✈️</div>
+          <h3 className="font-editorial text-2xl mb-2">You're on the list!</h3>
+          <p className="font-body text-white/70">Watch your inbox for the best of DEN, delivered monthly.</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`${compact ? 'py-8 px-6' : 'py-12 px-8 md:px-16'} text-white relative overflow-hidden`} style={{background: '#440099'}}>
+      <div className="relative z-10 max-w-[1320px] mx-auto px-5 md:px-10 flex flex-col md:flex-row items-center gap-8 md:gap-16">
+        <div className="flex-1">
+          <div className="flex items-center gap-3 mb-2">
+            <i className="fa-regular fa-envelope text-xl text-den-lime"></i>
+            <p className="font-body text-[13px] tracking-[0.15em] text-den-lime uppercase font-semibold">Stay Connected</p>
+          </div>
+          <h3 className="headline-editorial text-2xl md:text-[32px] leading-tight mb-2">Sign up for DEN alerts and news</h3>
+          <p className="font-body text-white/70 text-[15px]">Get the latest airport updates, travel tips, and insider guides delivered to your inbox.</p>
+        </div>
+        <div className="w-full md:w-auto md:min-w-[420px]">
+          <form
+            className="flex flex-col sm:flex-row sm:items-end gap-0"
+            onSubmit={(e) => { e.preventDefault(); if (email) setSubmitted(true); }}
+          >
+            <div className="flex-1">
+              <label className="block font-body text-white text-sm font-semibold mb-1.5">Email Address</label>
+              <input
+                type="email"
+                placeholder="Enter your email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="newsletter-input w-full px-5 py-3.5 bg-white border-none text-gray-800 placeholder-gray-400 font-body text-[15px]"
+              required
+            />
+            </div>
+            <button
+              type="submit"
+              className="px-8 py-3.5 font-body font-bold text-[15px] hover:opacity-90 transition-all duration-300 whitespace-nowrap"
+              style={{background: '#C4D451', color: '#0f0f10', border: 'none', cursor: 'pointer'}}
+            >
+              Sign Up
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── FAQ Section ───────────────────────────────────────────────────
+function FAQSection({ faqs }) {
+  const [openIndex, setOpenIndex] = useState(null);
+
+  return (
+    <div className="mt-10">
+      <h2 className="font-editorial text-2xl text-den-violet mb-6">Frequently Asked Questions</h2>
+      <div className="divide-y divide-gray-200 border-t border-b border-gray-200">
+        {faqs.map((faq, i) => (
+          <div key={i}>
+            <button
+              onClick={() => setOpenIndex(openIndex === i ? null : i)}
+              className="w-full flex items-center justify-between py-5 text-left group"
+            >
+              <span className="font-body font-semibold text-base md:text-lg text-gray-800 group-hover:text-den-violet transition-colors pr-4">
+                {faq.question}
+              </span>
+              <i className={`fa-solid fa-chevron-down text-den-violet text-sm transition-transform duration-300 flex-shrink-0 ${openIndex === i ? 'rotate-180' : ''}`}></i>
+            </button>
+            <div className={`faq-content ${openIndex === i ? 'open' : ''}`}>
+              <p className="pb-5 text-gray-600 font-body leading-relaxed text-base">
+                {faq.answer}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Blog Nav ──────────────────────────────────────────────────────
+function BlogNav({ onHome }) {
+  const [activePersona, setActivePersona] = useState('traveler');
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const navLinks = {
+    traveler: ['Flights and Security', 'Parking', 'Transportation', 'Dine, Shop and Art', 'Services', 'Accessibility', 'Careers'],
+    business: ['Business at DEN', 'Tenants', 'Employees and Badging', 'About DEN', 'Leadership and Governance', 'Community'],
+  };
+
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50">
+      {/* Desktop: Persona Tabs */}
+      <div className="hidden lg:block" style={{background: '#440099'}}>
+        <div className="max-w-[1320px] mx-auto flex items-end" style={{padding: '16px 48px 0'}}>
+          <button
+            onClick={() => setActivePersona('traveler')}
+            className="flex items-center gap-2.5 font-body font-semibold text-[17px] transition-all"
+            style={{
+              padding: '14px 24px',
+              background: activePersona === 'traveler' ? '#fff' : '#8F66C2',
+              color: activePersona === 'traveler' ? '#0f0f10' : '#fff',
+              border: 'none', cursor: 'pointer'
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
+            Traveler
+          </button>
+          <button
+            onClick={() => setActivePersona('business')}
+            className="flex items-center gap-2.5 font-body font-semibold text-[17px] transition-all"
+            style={{
+              padding: '14px 24px',
+              background: activePersona === 'business' ? '#fff' : '#8F66C2',
+              color: activePersona === 'business' ? '#0f0f10' : '#fff',
+              border: 'none', cursor: 'pointer'
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            Business
+          </button>
+          <div className="flex items-center gap-6 ml-auto" style={{paddingBottom: '16px'}}>
+            <div className="flex items-center gap-6">
+              <a href="#" className="font-body text-[17px] text-white hover:opacity-80 transition-opacity" style={{textDecoration: 'none'}}>Contact</a>
+              <a href="#" className="font-body text-[17px] text-white hover:opacity-80 transition-opacity flex items-center gap-1.5" style={{textDecoration: 'none'}}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                English
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </a>
+              <a href="#" className="font-body text-[17px] text-white hover:opacity-80 transition-opacity" style={{textDecoration: 'none'}}>Jobs</a>
+            </div>
+            <div className="flex items-center gap-4">
+              <button className="font-body text-[17px] font-medium text-white bg-transparent cursor-pointer transition-all hover:opacity-90" style={{padding: '10px 20px', border: '2px solid #fff'}}>Accessibility</button>
+              <button className="font-body text-[17px] font-medium cursor-pointer transition-all hover:opacity-90" style={{padding: '10px 20px', border: '2px solid #fff', background: '#fff', color: '#440099'}}>Interactive Map</button>
+              <button className="flex items-center justify-center bg-transparent border-none text-white cursor-pointer hover:opacity-80 transition-opacity" style={{width: '20px', height: '44px', padding: 0}}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop: Nav Bar */}
+      <div className="hidden lg:block bg-white" style={{borderBottom: '1px solid #E5E5E5'}}>
+        <div className="max-w-[1320px] mx-auto flex items-center" style={{padding: '12px 48px'}}>
+          <div className="flex-shrink-0">
+            <a href="index.html"><img src="./assets/logo-den.png" alt="Denver International Airport" style={{height: '50px'}} /></a>
+          </div>
+          <div className="flex items-center mx-auto">
+            {navLinks[activePersona].map(item => (
+              <span key={item} className="font-body font-semibold text-[17px] cursor-pointer hover:text-den-violet transition-colors" style={{padding: '0 20px', color: '#0f0f10'}}>
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile: Top Bar */}
+      <div className="lg:hidden bg-white flex items-center justify-between" style={{padding: '12px 24px', borderBottom: '1px solid #E5E5E5'}}>
+        <a href="index.html"><img src="./assets/logo-den.png" alt="Denver International Airport" style={{height: '40px'}} /></a>
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          className="flex flex-col justify-center items-center gap-1.5 bg-transparent border-none cursor-pointer"
+          style={{width: '36px', height: '36px'}}
+          aria-label="Toggle menu"
+        >
+          <span className="block bg-gray-800 transition-all duration-300" style={{width: '24px', height: '2px', transform: mobileOpen ? 'rotate(45deg) translateY(5px)' : 'none'}}></span>
+          <span className="block bg-gray-800 transition-all duration-300" style={{width: '24px', height: '2px', opacity: mobileOpen ? 0 : 1}}></span>
+          <span className="block bg-gray-800 transition-all duration-300" style={{width: '24px', height: '2px', transform: mobileOpen ? 'rotate(-45deg) translateY(-5px)' : 'none'}}></span>
+        </button>
+      </div>
+
+      {/* Mobile: Flyout Menu */}
+      {mobileOpen && (
+        <div className="lg:hidden fixed inset-0 z-50 bg-white overflow-y-auto" style={{top: '64px'}}>
+          {/* Persona Tabs */}
+          <div className="flex border-b border-gray-200">
+            <button
+              onClick={() => setActivePersona('traveler')}
+              className="flex-1 font-body font-semibold text-[15px] py-3 text-center transition-all"
+              style={{
+                background: activePersona === 'traveler' ? '#440099' : '#f5f5f5',
+                color: activePersona === 'traveler' ? '#fff' : '#666',
+                border: 'none', cursor: 'pointer'
+              }}
+            >
+              Traveler
+            </button>
+            <button
+              onClick={() => setActivePersona('business')}
+              className="flex-1 font-body font-semibold text-[15px] py-3 text-center transition-all"
+              style={{
+                background: activePersona === 'business' ? '#440099' : '#f5f5f5',
+                color: activePersona === 'business' ? '#fff' : '#666',
+                border: 'none', cursor: 'pointer'
+              }}
+            >
+              Business
+            </button>
+          </div>
+          {/* Nav Links */}
+          <div className="py-2">
+            {navLinks[activePersona].map(item => (
+              <a key={item} href="#" className="block font-body font-semibold text-[17px] text-gray-800 hover:text-den-violet hover:bg-gray-50 transition-colors" style={{padding: '14px 24px', textDecoration: 'none', borderBottom: '1px solid #f0f0f0'}}>
+                {item}
+              </a>
+            ))}
+          </div>
+          {/* Utility Links */}
+          <div className="border-t border-gray-200 py-4 px-6">
+            <div className="flex flex-col gap-3">
+              <a href="#" className="font-body text-[15px] text-gray-600" style={{textDecoration: 'none'}}>Contact</a>
+              <a href="#" className="font-body text-[15px] text-gray-600" style={{textDecoration: 'none'}}>Jobs</a>
+              <a href="#" className="font-body text-[15px] text-gray-600" style={{textDecoration: 'none'}}>Accessibility</a>
+            </div>
+            <button className="w-full mt-4 font-body text-[15px] font-semibold cursor-pointer transition-all hover:opacity-90" style={{padding: '12px 20px', border: 'none', background: '#440099', color: '#fff'}}>
+              Interactive Map
+            </button>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+}
+
+// ─── Post Card ─────────────────────────────────────────────────────
+function PostCard({ post, onClick, large }) {
+  return (
+    <article
+      onClick={() => onClick(post.id)}
+      className={`card-lift cursor-pointer group bg-white rounded-sm flex flex-col ${large ? '' : 'border border-gray-100'}`}
+      style={{boxShadow: '0 2px 16px 0 rgba(0, 0, 0, .05)'}}
+    >
+      {/* Image */}
+      <div className={`relative overflow-hidden rounded-t-sm ${large ? 'aspect-[16/8]' : 'aspect-[16/10]'}`}>
+        <img
+          src={post.image}
+          alt={post.title}
+          className="img-zoom w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div className="absolute top-4 left-4">
+          <CategoryBadge category={post.category} />
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex flex-col flex-1" style={{padding: large ? '24px 32px 24px' : '20px 20px 20px'}}>
+        <div className="flex items-center gap-4 text-[15px] font-body text-gray-600 mb-3">
+          <span className="flex items-center gap-1.5"><i className="fa-regular fa-calendar"></i> {post.date}</span>
+        </div>
+        <h3 className={`headline-editorial text-[#0f0f10] group-hover:text-den-violet transition-colors duration-300 mb-2 ${large ? 'text-2xl md:text-3xl' : 'text-[28px]'}`}>
+          {post.title}
+        </h3>
+        <p className={`font-body text-[#434648] leading-relaxed mb-4 ${large ? 'text-base' : 'text-[17px]'} line-clamp-2`}>
+          {post.excerpt}
+        </p>
+        <div className="mt-auto">
+          <div className="border-t border-gray-200 mb-4"></div>
+          <span className="inline-flex items-center gap-2 text-den-violet font-body font-semibold text-[17px] group-hover:gap-3 transition-all duration-300">
+            Read more <i className="fa-solid fa-arrow-right-long text-sm" style={{color: '#dc582a'}}></i>
+          </span>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+// ─── Blog Index Page ───────────────────────────────────────────────
+function BlogIndex({ onPostClick }) {
+  const [activeCategory, setActiveCategory] = useState('all');
+  const featuredPost = posts[0];
+  const secondaryFeatured = [posts[1], posts[2], posts[3]];
+  const filteredPosts = activeCategory === 'all'
+    ? posts.slice(4)
+    : posts.filter(p => p.category === activeCategory && p.id !== featuredPost.id && p.id !== posts[1].id && p.id !== posts[2].id && p.id !== posts[3].id);
+
+  return (
+    <div className="page-enter">
+      {/* Hero Featured Card */}
+      <section className="max-w-[1320px] mx-auto px-5 md:px-10 pt-44 md:pt-52 pb-8">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="headline-editorial text-[40px] md:text-[48px]" style={{color: '#0f0f10'}}>From the Terminal: Blog</h1>
+          <div className="flex items-center gap-4">
+            {[
+              { icon: 'fa-brands fa-facebook-f', url: 'https://www.facebook.com/DENAirport' },
+              { icon: 'fa-brands fa-x-twitter', url: 'https://twitter.com/DENAirport' },
+              { icon: 'fa-brands fa-instagram', url: 'https://www.instagram.com/denairport' },
+              { icon: 'fa-brands fa-youtube', url: 'https://www.youtube.com/denairport' },
+              { icon: 'fa-brands fa-linkedin-in', url: 'https://www.linkedin.com/company/denver-international-airport' },
+            ].map(s => (
+              <a key={s.icon} href={s.url} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-full flex items-center justify-center text-den-violet hover:opacity-80 transition-opacity duration-300 text-base" style={{backgroundColor: '#dacceb'}}>
+                <i className={s.icon}></i>
+              </a>
+            ))}
+          </div>
+        </div>
+        <div className="grid lg:grid-cols-3 gap-6" style={{gridTemplateColumns: '3fr 2fr'}}>
+          {/* Main Featured Card */}
+          <article
+            onClick={() => onPostClick(featuredPost.id)}
+            className="cursor-pointer group bg-white rounded-sm overflow-hidden flex flex-col"
+            style={{boxShadow: '0 2px 16px 0 rgba(0, 0, 0, .05)'}}
+          >
+            <div className="relative overflow-hidden aspect-[21/9]">
+              <img
+                src={featuredPost.image}
+                alt={featuredPost.title}
+                className="img-zoom w-full h-full object-cover"
+              />
+              <div className="absolute top-4 left-4">
+                <CategoryBadge category={featuredPost.category} />
+              </div>
+            </div>
+            <div className="p-6 md:p-8 flex flex-col items-start flex-1">
+              <div className="flex items-center gap-4 text-[15px] text-gray-600 font-body mb-3">
+                <span className="flex items-center gap-1.5"><i className="fa-regular fa-calendar"></i> {featuredPost.date}</span>
+              </div>
+              <h2 className="headline-editorial text-[28px] md:text-[34px] mb-4 group-hover:text-den-violet transition-colors" style={{color: '#0f0f10'}}>
+                {featuredPost.title}
+              </h2>
+              <p className="font-body text-[17px] mb-6 leading-relaxed" style={{color: '#434648'}}>
+                {featuredPost.excerpt}
+              </p>
+              <div className="border-t border-gray-200 w-full pt-4 mt-auto"></div>
+              <span className="inline-flex items-center gap-2 text-den-violet font-body font-semibold text-[17px] group-hover:gap-3 transition-all duration-300">
+                Read more
+                <i className="fa-solid fa-arrow-right-long text-sm" style={{color: '#dc582a'}}></i>
+              </span>
+            </div>
+          </article>
+
+          {/* Secondary Featured Cards - Stacked */}
+          <div className="flex flex-col gap-6">
+            {secondaryFeatured.map(post => (
+              <article
+                key={post.id}
+                onClick={() => onPostClick(post.id)}
+                className="cursor-pointer group bg-white rounded-sm overflow-hidden flex flex-row"
+                style={{boxShadow: '0 2px 16px 0 rgba(0, 0, 0, .05)'}}
+              >
+                <div className="relative overflow-hidden w-1/2 flex-shrink-0">
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    className="img-zoom w-full h-full object-cover"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <CategoryBadge category={post.category} />
+                  </div>
+                </div>
+                <div className="p-5 flex flex-col flex-1 items-start">
+                  <div className="flex items-center gap-4 text-[15px] text-gray-600 font-body mb-2">
+                    <span className="flex items-center gap-1.5"><i className="fa-regular fa-calendar"></i> {post.date}</span>
+                  </div>
+                  <h3 className="headline-editorial text-[22px] group-hover:text-den-violet transition-colors mt-1 mb-2" style={{color: '#0f0f10'}}>
+                    {post.title}
+                  </h3>
+                  <div className="mt-auto w-full">
+                    <div className="border-t border-gray-200 mb-3"></div>
+                    <span className="inline-flex items-center gap-2 text-den-violet font-body font-semibold text-[15px] group-hover:gap-3 transition-all duration-300">
+                      Read more <i className="fa-solid fa-arrow-right-long text-sm" style={{color: '#dc582a'}}></i>
+                    </span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Category Filters */}
+      <section className="max-w-[1320px] mx-auto px-5 md:px-10 pt-12 pb-4 text-center">
+        <h2 className="headline-editorial text-[28px] md:text-[34px] mb-6" style={{color: '#0f0f10'}}>Explore by Topic</h2>
+        <div className="flex flex-wrap gap-2 md:gap-3 justify-center">
+          {categories.map(cat => (
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={`px-4 py-2 rounded-full font-body text-[17px] font-medium transition-all duration-300 ${
+                activeCategory === cat.id
+                  ? 'bg-den-violet text-white shadow-lg shadow-den-violet/20'
+                  : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Post Grid */}
+      <section className="max-w-[1320px] mx-auto px-5 md:px-10 py-8 md:py-12">
+        {filteredPosts.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="font-editorial text-2xl text-gray-300 mb-2">No stories yet</p>
+            <p className="font-body text-gray-400">Check back soon for new content in this category.</p>
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 stagger-in">
+            {filteredPosts.map(post => (
+              <PostCard key={post.id} post={post} onClick={onPostClick} />
+            ))}
+          </div>
+        )}
+
+        {/* Load more */}
+        {filteredPosts.length > 0 && (
+          <div className="text-center mt-12 mb-16">
+            <button className="inline-flex items-center gap-2 px-8 py-3 border-2 border-den-violet text-den-violet font-body font-semibold text-[17px] rounded-sm hover:bg-den-violet hover:text-white transition-all duration-300">
+              Load More Stories
+              <i className="fa-solid fa-chevron-down text-xs"></i>
+            </button>
+          </div>
+        )}
+      </section>
+
+      {/* Newsletter Section */}
+      <section>
+        <NewsletterCTA />
+      </section>
+
+      {/* Footer */}
+      <footer>
+        {/* Main Footer */}
+        <div className="bg-white" style={{borderTop: '1px solid #E5E5E5'}}>
+          <div className="max-w-[1320px] mx-auto px-5 md:px-10 py-12 md:py-16">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
+              {/* Column 1: Travelers */}
+              <div>
+                <h4 className="font-body font-bold text-[15px] mb-4" style={{color: '#0f0f10'}}>Travelers</h4>
+                <div className="space-y-2.5">
+                  {['Flights & Security', 'Parking', 'Transportation', 'Dine, Shop & Art', 'Services', 'Accessibility'].map(l => (
+                    <a key={l} className="block font-body text-[15px] text-gray-500 hover:text-den-violet transition-colors cursor-pointer">{l}</a>
+                  ))}
+                </div>
+              </div>
+              {/* Column 2: Business */}
+              <div>
+                <h4 className="font-body font-bold text-[15px] mb-4" style={{color: '#0f0f10'}}>Business</h4>
+                <div className="space-y-2.5">
+                  {['Doing Business with DEN', 'Tenants', 'Employees & Badging', 'About DEN', 'Leadership & Governance', 'Community'].map(l => (
+                    <a key={l} className="block font-body text-[15px] text-gray-500 hover:text-den-violet transition-colors cursor-pointer">{l}</a>
+                  ))}
+                </div>
+              </div>
+              {/* Column 3: Quick Links */}
+              <div>
+                <h4 className="font-body font-bold text-[15px] mb-4" style={{color: '#0f0f10'}}>Quick Links</h4>
+                <div className="space-y-2.5">
+                  {['Interactive Map', 'Flight Status', 'Parking Reservations', 'Real-Time Security Wait Times', 'Lost & Found', 'Careers at DEN'].map(l => (
+                    <a key={l} className="block font-body text-[15px] text-gray-500 hover:text-den-violet transition-colors cursor-pointer">{l}</a>
+                  ))}
+                </div>
+              </div>
+              {/* Column 4: Contact */}
+              <div>
+                <h4 className="font-body font-bold text-[15px] mb-4" style={{color: '#0f0f10'}}>Contact</h4>
+                <div className="space-y-2.5">
+                  <p className="font-body text-[15px] text-gray-500 leading-relaxed">
+                    Denver International Airport<br />
+                    8500 Peña Blvd<br />
+                    Denver, CO 80249
+                  </p>
+                  <a className="block font-body text-[15px] text-gray-500 hover:text-den-violet transition-colors cursor-pointer">
+                    <i className="fa-solid fa-phone text-xs mr-1.5"></i> (303) 342-2000
+                  </a>
+                  <a className="block font-body text-[15px] text-gray-500 hover:text-den-violet transition-colors cursor-pointer">
+                    <i className="fa-solid fa-envelope text-xs mr-1.5"></i> Contact Us
+                  </a>
+                  <a className="block font-body text-[15px] text-gray-500 hover:text-den-violet transition-colors cursor-pointer">
+                    <i className="fa-solid fa-comment text-xs mr-1.5"></i> Give Feedback
+                  </a>
+                </div>
+              </div>
+              {/* Column 5: Connect */}
+              <div>
+                <h4 className="font-body font-bold text-[15px] mb-4" style={{color: '#0f0f10'}}>Connect with DEN</h4>
+                <div className="flex gap-3 mb-6">
+                  {[
+                    { icon: 'fa-brands fa-facebook-f', url: 'https://www.facebook.com/DENAirport' },
+                    { icon: 'fa-brands fa-x-twitter', url: 'https://twitter.com/DENAirport' },
+                    { icon: 'fa-brands fa-instagram', url: 'https://www.instagram.com/denairport' },
+                    { icon: 'fa-brands fa-youtube', url: 'https://www.youtube.com/denairport' },
+                    { icon: 'fa-brands fa-linkedin-in', url: 'https://www.linkedin.com/company/denver-international-airport' },
+                  ].map(s => (
+                    <a key={s.icon} href={s.url} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full flex items-center justify-center text-den-violet hover:opacity-80 transition-all duration-300 cursor-pointer text-sm" style={{backgroundColor: '#dacceb'}}>
+                      <i className={s.icon}></i>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div style={{background: '#f0f0f0', borderTop: '1px solid #E5E5E5'}}>
+          <div className="max-w-[1320px] mx-auto px-5 md:px-10 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-4">
+              <img src="./assets/logo-den.png" alt="DEN" className="h-8" />
+              <span className="font-body text-xs text-gray-400">&copy; 2026 City and County of Denver. All rights reserved.</span>
+            </div>
+            <div className="flex items-center gap-4 font-body text-xs text-gray-400">
+              <a className="hover:text-den-violet transition-colors cursor-pointer">Privacy Policy</a>
+              <span>|</span>
+              <a className="hover:text-den-violet transition-colors cursor-pointer">Terms of Use</a>
+              <span>|</span>
+              <a className="hover:text-den-violet transition-colors cursor-pointer">Accessibility</a>
+              <span>|</span>
+              <a className="hover:text-den-violet transition-colors cursor-pointer">Sitemap</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+// ─── Security Wait Times Article ───────────────────────────────────
+function SecurityArticle({ onBack, onPostClick }) {
+  const post = posts.find(p => p.id === 'security-wait-times');
+  const [activeToc, setActiveToc] = useState(0);
+
+  const tocItems = [
+    'Security Checkpoint Locations',
+    'Average Wait Times by Time of Day',
+    'Tips for Getting Through Faster',
+    'Best Times to Fly from DEN',
+    'Great Hall Construction Updates',
+    'FAQs',
+  ];
+
+  const faqs = [
+    {
+      question: 'What is the busiest day at DEN?',
+      answer: 'Sundays and Mondays are typically the busiest days at DEN, with peak travel periods around holidays. If you\'re flying on a busy day, we recommend arriving at least 2.5 hours before your flight and considering TSA PreCheck or CLEAR for expedited screening.',
+    },
+    {
+      question: 'Can I use TSA PreCheck at DEN?',
+      answer: 'Yes! TSA PreCheck is available at all DEN security checkpoints. PreCheck lanes are located at both the North and South checkpoints. Members enjoy shorter lines and can keep shoes, belts, and light jackets on during screening.',
+    },
+    {
+      question: 'Which security checkpoint is fastest?',
+      answer: 'The Bridge Security Checkpoint typically has the shortest wait times, though it has fewer lanes. For real-time wait times, check the DEN website or download the DEN Airport App.',
+    },
+    {
+      question: 'How early should I arrive at DEN?',
+      answer: 'For domestic flights, we recommend arriving 2 hours early. For international flights, arrive 3 hours early. During peak travel periods (holidays, summer weekends), add an extra 30 minutes to your arrival time.',
+    },
+  ];
+
+  const scrollToSection = (index) => {
+    setActiveToc(index);
+    const el = document.getElementById(`section-${index}`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  return (
+    <div className="page-enter">
+      {/* Hero */}
+      <div className="relative bg-den-violet overflow-hidden grain-overlay">
+        <div className="absolute inset-0">
+          <img src={post.image} alt="" className="w-full h-full object-cover opacity-50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-den-violet via-den-violet/70 to-den-violet/30"></div>
+        </div>
+        <div className="relative z-10 max-w-4xl mx-auto px-5 md:px-10 pt-52 md:pt-60 pb-12 md:pb-20">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 mb-6">
+            <button onClick={onBack} className="font-body text-sm text-white hover:text-white transition-colors">
+              <i className="fa-solid fa-arrow-left mr-1.5 text-xs"></i>Blog
+            </button>
+            <span className="text-white">/</span>
+            <span className="font-body text-sm text-white">Travel Tips</span>
+          </div>
+
+          <CategoryBadge category={post.category} />
+
+          <h1 className="headline-editorial text-3xl md:text-5xl lg:text-6xl text-white mt-4 mb-5 max-w-3xl">
+            {post.title}
+          </h1>
+          <p className="font-body text-lg md:text-xl text-white max-w-2xl mb-8 leading-relaxed">
+            {post.excerpt}
+          </p>
+
+          <div className="flex flex-wrap items-center gap-4 text-base font-body text-white">
+            <span className="flex items-center gap-2">
+              <i className="fa-regular fa-user text-sm"></i>
+              {post.author}
+            </span>
+            <span className="w-1 h-1 rounded-full bg-white"></span>
+            <span>{post.date}</span>
+            <span className="w-1 h-1 rounded-full bg-white"></span>
+            <span>{post.readTime}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Article Body */}
+      <div className="max-w-[1320px] mx-auto px-5 md:px-10 py-10 md:py-16">
+        <div className="flex gap-20">
+          {/* Sticky TOC Sidebar */}
+          <aside className="hidden lg:block w-80 flex-shrink-0 border-r border-gray-200 pr-10">
+            <div className="sticky top-28">
+              <p className="headline-editorial text-[18px] text-black uppercase mb-4">In this guide</p>
+              <nav className="space-y-3 border-l border-gray-200 pl-4">
+                {tocItems.map((item, i) => (
+                  <button
+                    key={i}
+                    onClick={() => scrollToSection(i)}
+                    className={`toc-link block text-left text-base font-body transition-all ${
+                      activeToc === i
+                        ? 'text-den-violet font-semibold'
+                        : 'text-gray-700 hover:text-den-violet'
+                    }`}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </nav>
+
+              <div className="mt-8 pt-6 border-t border-gray-100">
+                <ShareButtons />
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-gray-100">
+                <p className="headline-editorial text-[18px] text-black uppercase mb-4">Related Stories</p>
+                <div className="space-y-4">
+                  {posts.filter(p => p.id !== post.id).slice(0, 4).map(p => (
+                    <button key={p.id} onClick={() => { onPostClick(p.id); }} className="block text-left group">
+                      <div className="flex gap-3">
+                        <img src={p.image} alt="" className="w-16 h-16 rounded object-cover flex-shrink-0" />
+                        <div>
+                          <p className="font-body text-sm font-semibold text-gray-800 group-hover:text-den-violet transition-colors leading-snug">{p.title}</p>
+                          <p className="font-body text-xs text-gray-500 mt-1">{p.date}</p>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          {/* Article content */}
+          <div className="flex-1 max-w-3xl article-body">
+            {/* Mobile share */}
+            <div className="lg:hidden mb-8">
+              <ShareButtons />
+            </div>
+
+            <div id="section-0">
+              <h2>Current Security Checkpoint Locations</h2>
+              <p>
+                Denver International Airport has three security checkpoint locations, each serving
+                different areas of the Jeppesen Terminal. Understanding which checkpoint to use can
+                save you valuable time, especially during peak travel periods.
+              </p>
+
+              <p>
+                The <strong>North Checkpoint</strong> is the largest and most heavily used. Located on level 5
+                of the Jeppesen Terminal, it provides access to all three concourses via the underground
+                train system. The <strong>South Checkpoint</strong> offers a similar layout on the opposite
+                side of the terminal. For travelers heading to <a href="#">Concourse A</a>, the
+                <strong> Bridge Checkpoint</strong> provides a direct walking path — often with shorter wait times.
+              </p>
+            </div>
+
+            <div id="section-1">
+              <h2>Average Wait Times by Time of Day</h2>
+              <p>
+                Wait times at DEN vary significantly throughout the day. Here's what our data shows
+                for a typical weekday:
+              </p>
+
+              {/* Wait time chart */}
+              <div className="my-8 p-6 bg-white rounded-sm border border-gray-100">
+                <div className="space-y-4">
+                  {[
+                    { time: '4:00 – 6:00 AM', mins: 8, pct: 20, label: 'Light' },
+                    { time: '6:00 – 8:00 AM', mins: 25, pct: 62, label: 'Moderate' },
+                    { time: '8:00 – 10:00 AM', mins: 35, pct: 88, label: 'Heavy' },
+                    { time: '10:00 AM – 12:00 PM', mins: 20, pct: 50, label: 'Moderate' },
+                    { time: '12:00 – 2:00 PM', mins: 15, pct: 38, label: 'Light' },
+                    { time: '2:00 – 4:00 PM', mins: 22, pct: 55, label: 'Moderate' },
+                    { time: '4:00 – 6:00 PM', mins: 30, pct: 75, label: 'Heavy' },
+                    { time: '6:00 – 8:00 PM', mins: 18, pct: 45, label: 'Moderate' },
+                  ].map(row => (
+                    <div key={row.time} className="flex items-center gap-4">
+                      <span className="font-mono text-xs text-gray-500 w-36 flex-shrink-0 hidden sm:block">{row.time}</span>
+                      <span className="font-mono text-xs text-gray-500 w-20 flex-shrink-0 sm:hidden">{row.time.split('–')[0].trim()}</span>
+                      <div className="flex-1 h-6 bg-gray-100 rounded-sm overflow-hidden">
+                        <div
+                          className="wait-bar h-full rounded-sm flex items-center justify-end pr-2"
+                          style={{
+                            width: `${row.pct}%`,
+                            background: row.pct > 70 ? '#DC582A' : row.pct > 40 ? '#F59E0B' : '#00B2A9',
+                          }}
+                        >
+                          <span className="font-mono text-[10px] text-white font-bold">{row.mins} min</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-400 mt-4 font-body">
+                  <i className="fa-solid fa-circle-info mr-1"></i>
+                  Average wait times based on 2025–2026 data. Actual times may vary. Check <a href="#" className="text-den-violet underline">live wait times</a>.
+                </p>
+              </div>
+            </div>
+
+            <div id="section-2">
+              <h2>Tips for Getting Through Faster</h2>
+
+              {/* Callout box */}
+              <div className="callout-box p-6 rounded-sm my-6">
+                <p className="font-body font-bold text-sm mb-2" style={{color: '#8ea623'}}>
+                  <i className="fa-solid fa-lightbulb mr-1.5"></i>DEN Pro Tip
+                </p>
+                <p className="font-body text-gray-600">
+                  Download the <strong>DEN Airport App</strong> for real-time security wait times,
+                  gate information, and walking directions. It's the single best tool for navigating
+                  the airport efficiently.
+                </p>
+              </div>
+
+              <h3>TSA PreCheck</h3>
+              <p>
+                TSA PreCheck members enjoy dedicated lanes at all DEN checkpoints. The enrollment
+                process takes about 10 minutes and costs $78 for five years. PreCheck members can keep
+                shoes, belts, and light jackets on, and laptops can stay in bags. Average PreCheck wait
+                times at DEN are under 5 minutes.
+              </p>
+
+              <h3>CLEAR</h3>
+              <p>
+                CLEAR uses biometric screening (fingerprints and iris scans) to verify your identity,
+                letting you skip the document-check line entirely. CLEAR is available at both the North
+                and South checkpoints. Pair it with TSA PreCheck for the fastest possible experience.
+              </p>
+
+              <h3>Packing Tips</h3>
+              <ul>
+                <li>Place electronics and liquids in easily accessible locations</li>
+                <li>Wear slip-on shoes if you don't have PreCheck</li>
+                <li>Review the <a href="#">TSA prohibited items list</a> before packing</li>
+                <li>Consider a TSA-approved lock for checked luggage</li>
+                <li>Keep your boarding pass and ID ready before joining the line</li>
+              </ul>
+            </div>
+
+            {/* Inline image break */}
+            <figure className="my-10">
+              <div className="rounded-sm overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=900&h=400&fit=crop"
+                  alt="DEN Terminal interior"
+                  className="w-full object-cover"
+                />
+              </div>
+              <figcaption className="mt-3 font-body text-xs text-gray-400 italic">
+                The iconic tent roof of Jeppesen Terminal at Denver International Airport. Photo: DEN Media Library
+              </figcaption>
+            </figure>
+
+            <div id="section-3">
+              <h2>The Best Times to Fly from DEN</h2>
+              <p>
+                Based on historical data, the least crowded times to fly from DEN are:
+              </p>
+              <ul>
+                <li><strong>Tuesdays and Wednesdays</strong> — consistently the least busy days</li>
+                <li><strong>Early morning (before 6 AM)</strong> — minimal security lines</li>
+                <li><strong>Mid-afternoon (1–3 PM)</strong> — a lull between morning and evening rushes</li>
+                <li><strong>Late evening (after 7 PM)</strong> — most travelers have departed</li>
+              </ul>
+              <p>
+                The busiest periods are Friday afternoons, Sunday evenings, and any holiday weekend.
+                Summer months (June–August) see the highest overall volume, with DEN processing over
+                200,000 passengers on peak days.
+              </p>
+            </div>
+
+            {/* Pull quote */}
+            <blockquote className="pull-quote my-10 py-4 pl-10">
+              <p className="font-editorial text-xl md:text-2xl text-den-violet italic leading-relaxed mb-2">
+                DEN processes over 69 million passengers annually — making it the third-busiest airport in the United States.
+              </p>
+              <cite className="font-body text-sm text-gray-400 not-italic">DEN 2025 Annual Report</cite>
+            </blockquote>
+
+            <div id="section-4">
+              <h2>What to Expect During Great Hall Construction</h2>
+              <p>
+                The <a href="#">Great Hall renovation project</a> is transforming the heart of DEN's
+                Jeppesen Terminal. While construction continues through 2026, travelers should be aware
+                of the following impacts:
+              </p>
+              <ul>
+                <li>Some retail and dining locations may be temporarily relocated</li>
+                <li>Wayfinding signage has been enhanced — follow the purple signs</li>
+                <li>Security checkpoint access remains unchanged</li>
+                <li>New amenities are opening in phases — check the <a href="#">interactive map</a> for current layouts</li>
+              </ul>
+
+              <div className="callout-box p-6 rounded-sm my-6">
+                <p className="font-body font-bold text-sm mb-2" style={{color: '#8ea623'}}>
+                  <i className="fa-solid fa-triangle-exclamation mr-1.5"></i>Construction Notice
+                </p>
+                <p className="font-body text-gray-600">
+                  Allow an extra 10–15 minutes for navigation during construction. Follow
+                  <strong> @DENAirport</strong> on social media for real-time updates on construction impacts.
+                </p>
+              </div>
+            </div>
+
+            <div id="section-5">
+              <FAQSection faqs={faqs} />
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main App ──────────────────────────────────────────────────────
+function App() {
+  const [currentView, setCurrentView] = useState('index');
+  // URL-based routing for blog detail
+  const getArticleFromURL = () => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('post');
+  };
+
+  const [currentArticle, setCurrentArticle] = useState(getArticleFromURL());
+
+  useEffect(() => {
+    if (getArticleFromURL()) {
+      setCurrentView('article');
+    }
+  }, []);
+
+  useEffect(() => {
+    const onPopState = () => {
+      const postId = getArticleFromURL();
+      setCurrentArticle(postId);
+      setCurrentView(postId ? 'article' : 'index');
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  const handlePostClick = (postId) => {
+    setCurrentArticle(postId);
+    setCurrentView('article');
+    window.history.pushState({}, '', `?post=${postId}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleBack = () => {
+    setCurrentView('index');
+    setCurrentArticle(null);
+    window.history.pushState({}, '', window.location.pathname);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const renderArticle = () => {
+    switch (currentArticle) {
+      case 'security-wait-times':
+        return <SecurityArticle onBack={handleBack} onPostClick={handlePostClick} />;
+      default:
+        // Generic article fallback
+        const post = posts.find(p => p.id === currentArticle);
+        if (!post) return null;
+        return (
+          <div className="page-enter">
+            <div className="relative bg-den-violet overflow-hidden grain-overlay">
+              <div className="absolute inset-0">
+                <img src={post.image} alt="" className="w-full h-full object-cover opacity-25" />
+                <div className="absolute inset-0 bg-gradient-to-t from-den-violet via-den-violet/80 to-den-violet/50"></div>
+              </div>
+              <div className="relative z-10 max-w-4xl mx-auto px-5 md:px-10 pt-52 md:pt-60 pb-12 md:pb-20">
+                <button onClick={handleBack} className="flex items-center gap-2 text-white/50 hover:text-white font-body text-sm transition-colors mb-6">
+                  <i className="fa-solid fa-arrow-left text-xs"></i>Back to Blog
+                </button>
+                <CategoryBadge category={post.category} />
+                <h1 className="headline-editorial text-3xl md:text-5xl text-white mt-4 mb-5">{post.title}</h1>
+                <p className="font-body text-lg text-white/60 max-w-2xl mb-6">{post.excerpt}</p>
+                <div className="flex flex-wrap items-center gap-4 text-sm font-body text-white/40">
+                  <span>{post.author}</span>
+                  <span className="w-1 h-1 rounded-full bg-white/30"></span>
+                  <span>{post.date}</span>
+                  <span className="w-1 h-1 rounded-full bg-white/30"></span>
+                  <span>{post.readTime}</span>
+                </div>
+              </div>
+            </div>
+            <div className="max-w-3xl mx-auto px-5 md:px-10 py-12 md:py-20 article-body">
+              <ShareButtons />
+              <p className="mt-8 text-xl leading-relaxed text-gray-500">
+                This is a prototype article page. In production, this would contain the full article content
+                for "{post.title}". The template demonstrates the article layout, typography, and design system.
+              </p>
+              <div className="mt-16">
+                <NewsletterCTA compact />
+              </div>
+              <div className="mt-16">
+                <h2 className="font-editorial text-2xl text-den-violet mb-8 diagonal-accent pb-2">Related Stories</h2>
+                <div className="grid sm:grid-cols-3 gap-6 stagger-in">
+                  {posts.filter(p => p.id !== post.id).slice(0, 3).map(p => (
+                    <PostCard key={p.id} post={p} onClick={handlePostClick} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div className="min-h-screen" style={{backgroundColor: '#f7faff'}}>
+      <BlogNav onHome={handleBack} />
+      {currentView === 'index' ? (
+        <BlogIndex onPostClick={handlePostClick} />
+      ) : (
+        renderArticle()
+      )}
+    </div>
+  );
+}
+
+// Mount
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+
+// Live reload - poll for file changes
+(function() {
+  let lastModified = null;
+  setInterval(async () => {
+    try {
+      const res = await fetch(window.location.href, { method: 'HEAD' });
+      const modified = res.headers.get('Last-Modified');
+      if (lastModified && modified !== lastModified) {
+        window.location.reload();
+      }
+      lastModified = modified;
+    } catch (e) {}
+  }, 1000);
+})();
+</script>
+</body>
+</html>
